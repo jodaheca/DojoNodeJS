@@ -1,0 +1,26 @@
+<section data-ng-controller="ReservasController" data-ng-init="findOne()">
+	<div class="page-header">
+		<h1 data-ng-bind="reserva.persona"></h1>
+			Persona: {{reserva.persona}}<br/>
+            tipo_espacio: {{reserva.tipo_espacio}}<br/>
+            numero_espacio: {{reserva.numero_espacio}}<br/>
+            fecha: {{reserva.fecha}}<br/>
+            hora: {{reserva.hora}}<br/>
+	</div>
+	<div class="pull-right" data-ng-show="authentication.user._id == reserva.user._id">
+		<a class="btn btn-primary" href="/#!/reservas/{{reserva._id}}/edit">
+			<i class="glyphicon glyphicon-edit"></i>
+		</a>
+		<a class="btn btn-primary" data-ng-click="remove();">
+			<i class="glyphicon glyphicon-trash"></i>
+		</a>
+	</div>
+	<small>
+		<em class="text-muted">
+			Posted on
+			<span data-ng-bind="reserva.created | date:'mediumDate'"></span>
+			by
+			<span data-ng-bind="reserva.user.displayName"></span>
+		</em>
+	</small>
+</section>
