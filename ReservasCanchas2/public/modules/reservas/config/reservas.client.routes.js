@@ -9,6 +9,14 @@ angular.module('reservas').config(['$stateProvider',
 			url: '/reservas',
 			templateUrl: 'modules/reservas/views/list-reservas.client.view.html'
 		}).
+		state('listReservasEspacio', {
+			url: '/reservasEspacio/:espacioId',
+			templateUrl: 'modules/reservas/views/list-reservasEspacio.client.view.html'
+		}).
+		state('listReservasSemana', {
+			url: '/reservasSemana',
+			templateUrl: 'modules/reservas/views/reservasSemana.client.view.html'
+		}).
 		state('createReserva', {
 			url: '/reservas/create',
 			templateUrl: 'modules/reservas/views/create-reserva.client.view.html'

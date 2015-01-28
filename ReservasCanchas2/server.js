@@ -14,7 +14,7 @@ var init = require('./config/init')(),
 // Bootstrap db connection
 var db = mongoose.connect(config.db, function(err) {
 	if (err) {
-		console.error('\x1b[31m', 'Could not connect to MongoDB!');
+		console.error('\x1b[31m', 'No se pudo realizar la conexion a MongoDB!');
 		console.log(err);
 	}
 });
@@ -32,4 +32,4 @@ app.listen(config.port);
 exports = module.exports = app;
 
 // Logging initialization
-console.log('MEAN.JS application started on port ' + config.port);
+console.log('La aplicación Reservas Espacios Deportivos Inicion en el Puerto: ' + config.port);

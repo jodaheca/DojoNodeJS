@@ -84,6 +84,28 @@ exports.list = function(req, res) { Reserva.find().sort('-created').populate('us
 };
 
 /**
+ * List of Reservas de un espacio especifico.
+ */
+exports.listPorEspacio = function(req, res) {
+	console.log('llega al server');
+	console.log('Request: ', req.params);
+	// req.parameter.espacio;
+	var espacioId = 2;
+	//var espacioId = req.espacio;
+	console.log('llega al server');
+ Reserva.find({numero_espacio: espacioId}).sort('-created').populate('user', 'displayName').exec(function(err, reservas) {
+		
+		if (err) {
+			return res.status(400).send({
+				message: errorHandler.getErrorMessage(err)
+			});
+		} else {
+			res.jsonp(reservas);
+		}
+	});
+};
+
+/**
  * Reserva middleware
  */
 exports.reservaByID = function(req, res, next, id) { Reserva.findById(id).populate('user', 'displayName').exec(function(err, reserva) {

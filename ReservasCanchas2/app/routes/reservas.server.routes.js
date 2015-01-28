@@ -4,10 +4,13 @@ module.exports = function(app) {
 	var users = require('../../app/controllers/users');
 	var reservas = require('../../app/controllers/reservas');
 
-	// Reservas Routes
+	// Reservas Routes Lista las reservas que hay en la db
 	app.route('/reservas')
 		.get(reservas.list)
 		.post(users.requiresLogin, reservas.create);
+
+	app.route('/reservasEspacio/:espacioId')
+		.get(reservas.listPorEspacio);	
 
 	app.route('/reservas/:reservaId')
 		.get(reservas.read)
