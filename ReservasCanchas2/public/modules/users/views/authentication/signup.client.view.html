@@ -23,11 +23,11 @@
 			<fieldset>
 				<div class="form-group">
 					<label for="firstName">Nombre</label>
-					<input type="text" required id="firstName" name="firstName" class="form-control" data-ng-model="credentials.firstName" placeholder="First Name">
+					<input type="text" required id="firstName" name="firstName" class="form-control" data-ng-model="credentials.firstName" placeholder="Nombre">
 				</div>
 				<div class="form-group">
 					<label for="lastName">Apellido</label>
-					<input type="text" id="lastName" name="lastName" class="form-control" data-ng-model="credentials.lastName" placeholder="Last Name">
+					<input type="text" id="lastName" name="lastName" class="form-control" data-ng-model="credentials.lastName" placeholder="Apellido">
 				</div>
 				<div class="form-group">
 					<label for="email">Email</label>
@@ -35,19 +35,19 @@
 				</div>
 				<div class="form-group">
 					<label for="username">Username</label>
-					<input type="text" id="username" name="username" class="form-control" data-ng-model="credentials.username" placeholder="Username">
+					<input type="text" id="username" name="username" class="form-control" data-ng-model="credentials.username" placeholder="nombreUsuario">
 				</div>
 				<div class="form-group">
-					<label for="password">Password</label>
-					<input type="password" id="password" name="password" class="form-control" data-ng-model="credentials.password" placeholder="Password">
+					<label for="password">Contraseña</label>
+					<input type="password" id="password" name="password" class="form-control" data-ng-model="credentials.password" placeholder="Contraseña">
 				</div>
 				<div class="form-group">
 					<label for="username">Tipo Usuario</label>
 					<input type="text" id="tipoUser" name="tipoUser" class="form-control" data-ng-model="credentials.tipoUser" placeholder="Tipo Usuario">
 				</div>
 				<div class="text-center form-group">
-					<button type="submit" class="btn btn-large btn-primary">Sign up</button>&nbsp; or&nbsp;
-					<a href="/#!/signin" class="show-signup">Sign in</a>
+					<button type="submit" class="btn btn-large btn-primary">Registrarse</button>&nbsp; or&nbsp;
+					<a href="/#!/signin" class="show-signup">Ingresar</a>
 				</div>
 				<div data-ng-show="error" class="text-center text-danger">
 					<strong data-ng-bind="error"></strong>

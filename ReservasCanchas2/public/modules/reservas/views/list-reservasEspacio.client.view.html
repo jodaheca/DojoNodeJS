@@ -18,7 +18,7 @@
             hora: {{reserva.hora}}<br/>
         </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!reservas.$resolved || reservas.length">
+    <div class="alert alert-warning text-center" data-ng-hide="!reservas.$resolved || reservas.length>=4">
     	No Existen Reservas <a href="/#!/reservas/create">crear Reserva</a>?
     </div>
 </section>

@@ -1,8 +1,37 @@
 'use strict';
 
 // Reservas controller
-angular.module('reservas').controller('ReservasController', function ($scope, $stateParams, $location, Authentication, Reservas, Reservaslista) {
+angular.module('reservas').controller('ReservasController', 
+  function ($scope, $stateParams, $location, Authentication, Reservas, Reservaslista, $modal, $log) {
   $scope.authentication = Authentication;
+  //Funcion para abrir un nuevo modal para registrar una reserva por parte de un estudiante.
+  $scope.registrarReserva = function (size,diaSemana) {
+    var dia = diaSemana;
+    var codigoEspacio = $stateParams.espacioId;
+    console.log('Espacio a Reservar: ', codigoEspacio);
+    console.log('Dia de la Semana: ', dia);
+    $scope.horarios = [{codigo: 1,valor:'2PM-3PM'}, {codigo: 2,valor:'3PM-4PM'},
+     {codigo: 3,valor:'4PM-5PM'},{codigo: 4,valor:'5PM-6PM'}];
+    var modalInstance = $modal.open({
+      templateUrl: 'modules/reservas/views/reserva-estudiante.client.view.html',
+      controller: function ($scope, $modalInstance, horarios) {
+      $scope.horarios = horarios;
+      $scope.horario = {
+      horario: $scope.horarios[0]
+      }},
+      size: size,
+      resolve: {
+        horarios: function () {
+          return $scope.horarios;
+        }
+      }
+    });
+    modalInstance.result.then(function (horarioSelec) {
+      $scope.horario = horarioSelec;
+    },function(){   
+      $log.info('Modal designe: '+ new Date());
+    });
+  }    
 
     // Create new Reserva
   $scope.create = function () {
@@ -68,6 +97,7 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
   $scope.BuscarPorEspacio = function () {
     console.log('Entro a la funcion BuscarPorEspacio');
     var espacioId = $stateParams.espacioId;
+    console.log('Id del Tipo de Espacio', espacioId);
     Reservaslista.getReservas(espacioId)
       .success(function (res) {
         console.log('PETICION:', res);
@@ -76,8 +106,6 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
       .error(function (err) {
         console.log('Error: ', err);
       });
-
-    console.log('Id del Tipo de Espacio', espacioId);
     // $http.get('/reservasEspacio/',{espacio : espacioId}).
     //           success(function(data, status, headers, config) {
     //             $scope.reservas = data;
