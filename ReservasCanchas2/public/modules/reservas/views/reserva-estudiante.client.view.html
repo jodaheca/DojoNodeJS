@@ -1,7 +1,7 @@
-<section data-ng-controller="ReservasController">
-	<div class="page-header">
-        <center><h1>Horarios</h1><center>
-    </div>
+<div class="modal-header">
+    <center><h1>Horarios</h1><center>
+</div>
+<div class="modal-body">
     <div class="list-group">
         <a data-ng-repeat="horario in horarios" data-ng-href="#!/reservas/{{horario.codigo}}" class="list-group-item">
       <h4 class="list-group-item-heading" data-ng-bind="horario.codigo"></h4>
@@ -12,7 +12,10 @@
             hora: {{reserva.hora}}<br/> -->
         </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!horarios.$resolved || horarios.length">
-      No hay horarios disponibles<a href="/#!/reservas/create">crear Reserva</a>?
+    <div class="alert alert-warning text-center" ng-show="horarios.length === 0">
+      No hay horarios disponibles
     </div>
-</section>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="salirReserva()">Salir</button>
+</div> 

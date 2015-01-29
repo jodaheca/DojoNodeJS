@@ -1,24 +1,51 @@
 'use strict';
 
 // Reservas controller
-angular.module('reservas').controller('ReservasController', 
-  function ($scope, $stateParams, $location, Authentication, Reservas, Reservaslista, $modal, $log) {
+angular.module('reservas').controller('ReservasController', function ($scope, $stateParams, $location, Authentication, Reservas, Reservaslista, $modal, $log) {
+
   $scope.authentication = Authentication;
   //Funcion para abrir un nuevo modal para registrar una reserva por parte de un estudiante.
-  $scope.registrarReserva = function (size,diaSemana) {
+
+  $scope.registrarReserva = function (size, diaSemana) {
     var dia = diaSemana;
     var codigoEspacio = $stateParams.espacioId;
     console.log('Espacio a Reservar: ', codigoEspacio);
     console.log('Dia de la Semana: ', dia);
-    $scope.horarios = [{codigo: 1,valor:'2PM-3PM'}, {codigo: 2,valor:'3PM-4PM'},
-     {codigo: 3,valor:'4PM-5PM'},{codigo: 4,valor:'5PM-6PM'}];
-    var modalInstance = $modal.open({
+
+    $scope.horarios = [
+      {
+        codigo: 1,
+        valor: '2PM-3PM'
+      },
+      {
+        codigo: 2,
+        valor: '3PM-4PM'
+      },
+      {
+        codigo: 3,
+        valor: '4PM-5PM'
+      },
+      {
+        codigo: 4,
+        valor: '5PM-6PM'
+      }
+    ];
+
+    var modalReservaEstudiante = $modal.open({
       templateUrl: 'modules/reservas/views/reserva-estudiante.client.view.html',
       controller: function ($scope, $modalInstance, horarios) {
-      $scope.horarios = horarios;
-      $scope.horario = {
-      horario: $scope.horarios[0]
-      }},
+        $scope.horarios = horarios;
+        //$scope.horarios = [];
+        $scope.horario = {
+          horario: $scope.horarios[0]
+        };
+        $scope.salirReserva = function () {
+          $modalInstance.close();
+        };
+        $scope.reservar = function (hora) {
+          $scope.horario = hora;
+        };
+      },
       size: size,
       resolve: {
         horarios: function () {
@@ -26,12 +53,13 @@ angular.module('reservas').controller('ReservasController',
         }
       }
     });
-    modalInstance.result.then(function (horarioSelec) {
+
+    modalReservaEstudiante.result.then(function (horarioSelec) {
       $scope.horario = horarioSelec;
-    },function(){   
-      $log.info('Modal designe: '+ new Date());
+    }, function () {
+      $log.info('Modal designe: ' + new Date());
     });
-  }    
+  };
 
     // Create new Reserva
   $scope.create = function () {
@@ -62,14 +90,15 @@ angular.module('reservas').controller('ReservasController',
     // Remove existing Reserva
   $scope.remove = function (reserva) {
     var i;
-    if (reserva) { reserva.$remove();
+    if (reserva) {
+      reserva.$remove();
 
       for (i in $scope.reservas) {
         if ($scope.reservas[i] === reserva) {
           $scope.reservas.splice(i, 1);
         }
       }
-      } else {
+    } else {
       $scope.reserva.$remove(function () {
         $location.path('reservas');
       });
@@ -90,7 +119,6 @@ angular.module('reservas').controller('ReservasController',
   // Find a list of Reservas
   $scope.find = function () {
     $scope.reservas = Reservas.query();
-
   };
 
   // Metodo para obtener las reservas de un espacio especifico.
