@@ -21,6 +21,10 @@
 	<div class="col-xs-offset-2 col-xs-8 col-md-offset-5 col-md-2">
 		<form name="userForm" data-ng-submit="signup()" class="signin form-horizontal" novalidate autocomplete="off">
 			<fieldset>
+			<div class="form-group">
+					<label for="firstName">Numero de Indentificación</label>
+					<input type="text" required id="identificacion" name="identificacion" class="form-control" data-ng-model="credentials.identificacion" placeholder="Numero de Indetificación">
+				</div>
 				<div class="form-group">
 					<label for="firstName">Nombre</label>
 					<input type="text" required id="firstName" name="firstName" class="form-control" data-ng-model="credentials.firstName" placeholder="Nombre">
