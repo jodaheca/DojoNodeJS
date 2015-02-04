@@ -1,7 +1,7 @@
 'use strict';
 
 // Reservas controller
-angular.module('reservas').controller('ReservasController', function ($scope, $stateParams, $location, Authentication, Reservas, Reservaslista, $modal, $log) {
+angular.module('reservas').controller('ReservasController', function ($scope, $stateParams, $location, Authentication, Reservas, Reservaslista, Reservafechaestudiante, $modal, $log) {
 
   $scope.authentication = Authentication;
   //Funcion para abrir un nuevo modal para registrar una reserva por parte de un estudiante.
@@ -43,7 +43,7 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
 
         $scope.reservar = function (hora) {
           $scope.horaReserva = hora + 1;
-          if ($scope.espacio <= 3) {
+          if (codigoEspacio <= 3) {
             $scope.tipo_espacio = 'Cancha Sintetica';
           } else {
             $scope.tipo_espacio = 'Cancha de Tenis';
@@ -53,10 +53,12 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
           // Dia de la semana;
           var dSemana = dt.getDay();
           var dMes = dt.getDate();
+          //var month = dt.getMonth();
+          //var year = dt.getFullYear();
           var agregarDias =  $scope.diaSemana - dSemana;
           // Configuracion de la fecha de acuerdo a lo que escogio el estudiante.
           dt.setDate(dMes + agregarDias);
-          dt.setHours($scope.horaReserva);
+          dt.setHours(0);
           dt.setMinutes(0);
           dt.setSeconds(0);
           dt.setMilliseconds(0);
@@ -180,5 +182,65 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
     $scope.reserva = Reservas.get({
       reservaId: $stateParams.reservaId
     });
+  };
+ //Metodo que regresa las reservas que tenga una persona en un rango de fechas
+  $scope.verificarDisponibilidad = function (espacioId) {
+
+    $scope.authentication = Authentication;
+    var codigoEspacio = espacioId;
+    console.log('El codigo del espacion es:', codigoEspacio);
+    var dt = new Date();
+    // Dia de la semana;
+    var dSemana = dt.getDay();
+    var dMes = dt.getDate();
+    console.log('Dia semana:', dSemana);
+
+    var fechaInicial = new Date();
+    var fechaFinal = new Date();
+    fechaInicial.setDate(dMes);
+    fechaInicial.setHours(0);
+    fechaInicial.setMinutes(0);
+    fechaInicial.setSeconds(0);
+    fechaFinal.setMilliseconds(0);
+    fechaFinal.setDate(dMes + 4);
+    fechaFinal.setHours(0);
+    fechaFinal.setMinutes(0);
+    fechaFinal.setSeconds(0);
+    fechaFinal.setMilliseconds(0);
+
+    console.log('fecha Inicial: ', fechaInicial);
+    console.log('fecha Final: ', fechaFinal);
+
+    //Metodo que consume el servicio web que recibe las fechas y la cedula de la persona y retorna una lista con las reservas
+    Reservafechaestudiante.getReservaUsuario(fechaInicial, fechaFinal, $scope.authentication.user.identificacion)
+      .success(function (res) {
+        console.log('PETICION:', res);
+        var reservas = res;
+        if (reservas.length !== 0) {
+          var reser = reservas[0];
+          console.log(reser);
+          console.log('Señor Usuario ya usted tiene una reserva para esta semana.');
+          alert('Señor Usuario  usted ya tiene una reserva para esta semana.');
+          $location.path('reservas/' + reser._id);
+
+        }
+      })
+        .error(function (err) {
+        console.log('Error: ', err);
+      });
+    // verificamos si esta consultando reservas para una Cancha sintetica        
+    if (codigoEspacio <= 3) {
+
+      // Si el dia en que se hace la consulta es diferente al lunes entones no lo dejamos pasar
+      if (dSemana !== 2) {
+         console.log('Recuerde que la reserva de las canchas Sinteticas se debe realizar los lunes de cada semana.');
+        alert('La reserva de las canchas sintéticas se realizan los lunes de cada semana.');
+        $location.path('/homeStudent');
+      } else {
+        $location.path('/modelo/' + espacioId);
+      }
+    } else { // Va a reservas una cancha De tenis
+        $location.path('/modelo/' + espacioId);
+    }
   };
 });

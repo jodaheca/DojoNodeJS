@@ -5,13 +5,13 @@
     <div class="list-group">
         <a data-ng-repeat="reserva in reservas" data-ng-href="#!/reservas/{{reserva._id}}" class="list-group-item">
 			<small class="list-group-item-text">
-				Posted on
+				Creada
 				<span data-ng-bind="reserva.created | date:'medium'"></span>
-				by
+				Por
 				<span data-ng-bind="reserva.user.displayName"></span>
 			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="reserva.persona"></h4>
-            Persona: {{reserva.persona}}<br/>
+			<h4 class="list-group-item-heading" data-ng-bind="reserva.user.displayName"></h4>
+            Identificación: {{reserva.persona}}<br/>
             tipo_espacio: {{reserva.tipo_espacio}}<br/>
             numero_espacio: {{reserva.numero_espacio}}<br/>
             fecha: {{reserva.fecha}}<br/>

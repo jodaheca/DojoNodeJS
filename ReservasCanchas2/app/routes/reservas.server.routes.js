@@ -12,6 +12,9 @@ module.exports = function(app) {
 	app.route('/reservasEspacio/:espacioId')
 		.get(reservas.listPorEspacio);	
 
+	app.route('/reservaFechaUsuario/:fechaInicial/:fechaFinal/:idUsuario')
+		.get(reservas.reservaFechaUsuario);	
+
 	app.route('/reservas/:reservaId')
 		.get(reservas.read)
 		.put(users.requiresLogin, reservas.hasAuthorization, reservas.update)
