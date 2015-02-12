@@ -2,7 +2,43 @@
     <div class="page-header">
         <h1>Reservas</h1>
     </div>
-    <div class="list-group">
+    <div ng-controller="ReservasController">
+        <form class="form-inline">
+        <input ng-model="query" type="text" placeholder="Busqueda por caracter" autofocus>
+        </form>
+        <br>
+        <table class="table table-bordered">
+             <thead>
+              <tr>
+               <th>Identificación </th>
+               <th>Tipo de Espacio </th>
+               <th>Número de Espacio </th>
+               <th>Fecha Reserva </th>
+               <th>Hora </th>
+               <th>Información General </th>
+              </tr>
+             </thead>
+             <tbody>
+                <tr ng-repeat="reserva in reservas | filter: query | orderBy: 'hora' ">
+                 <td>{{reserva.persona}} </td>>
+                 <td>{{reserva.tipo_espacio}}</td>
+                 <td> {{reserva.numero_espacio}}</td>
+                 <td> {{reserva.fecha}} </td>
+                 <td>{{reserva.hora}} </td>
+                 <td> <small class="list-group-item-text">
+                        Creada
+                        <span data-ng-bind="reserva.created | date:'medium'"></span>
+                        Por
+                        <span data-ng-bind="reserva.user.displayName"></span>
+                    </small></td></tr>
+            </tbody>
+        </table>
+        <div class="pull-left" >
+            <a class="btn btn-warning" data-ng-click="principalAdmin();">
+            Atras
+        </a>
+    </div>
+    <!-- <div class="list-group">
         <a data-ng-repeat="reserva in reservas" data-ng-href="#!/reservas/{{reserva._id}}" class="list-group-item">
 			<small class="list-group-item-text">
 				Creada
@@ -17,7 +53,7 @@
             fecha: {{reserva.fecha}}<br/>
             hora: {{reserva.hora}}<br/>
         </a>
-    </div>
+    </div> -->
     <div class="alert alert-warning text-center" data-ng-hide="!reservas.$resolved || reservas.length">
     	No Existen Reservas <a href="/#!/reservas/create">crear Reserva</a>?
     </div>

@@ -5,9 +5,9 @@
     <div class="list-group">
         <a data-ng-repeat="reserva in reservas" data-ng-href="#!/reservas/{{reserva._id}}" class="list-group-item">
 			<small class="list-group-item-text">
-				Posted on
+				Creada
 				<span data-ng-bind="reserva.created | date:'medium'"></span>
-				by
+				por
 				<span data-ng-bind="reserva.user.displayName"></span>
 			</small>
 			<h4 class="list-group-item-heading" data-ng-bind="reserva.persona"></h4>
@@ -17,8 +17,5 @@
             fecha: {{reserva.fecha}}<br/>
             hora: {{reserva.hora}}<br/>
         </a>
-    </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!reservas.$resolved || reservas.length>=4">
-    	No Existen Reservas <a href="/#!/reservas/create">crear Reserva</a>?
     </div>
 </section>

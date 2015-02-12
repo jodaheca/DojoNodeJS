@@ -3,8 +3,9 @@
  * Module dependencies.
  */
 var init = require('./config/init')(),
-	config = require('./config/config'),
-	mongoose = require('mongoose');
+  config = require('./config/config'),
+  mongoose = require('mongoose');
+var nodemailer = require('nodemailer');
 
 /**
  * Main application entry file.
@@ -12,11 +13,11 @@ var init = require('./config/init')(),
  */
 
 // Bootstrap db connection
-var db = mongoose.connect(config.db, function(err) {
-	if (err) {
-		console.error('\x1b[31m', 'No se pudo realizar la conexion a MongoDB!');
-		console.log(err);
-	}
+var db = mongoose.connect(config.db, function (err) {
+  if (err) {
+    console.error('\x1b[31m', 'No se pudo realizar la conexion a MongoDB!');
+    console.log(err);
+  }
 });
 
 // Init the express application
@@ -32,4 +33,4 @@ app.listen(config.port);
 exports = module.exports = app;
 
 // Logging initialization
-console.log('La aplicación Reservas Espacios Deportivos Inicion en el Puerto: ' + config.port);
+console.log('La aplicación Reserva Espacios Deportivos Inició en el Puerto: ' + config.port);

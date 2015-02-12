@@ -1,5 +1,5 @@
 <section class="row" data-ng-controller="AuthenticationController">
-	<h3 class="col-md-12 text-center">Registrate usando tu cuenta social </h3>
+	<!-- <h3 class="col-md-12 text-center">Registrate usando tu cuenta social </h3>
 	<div class="col-md-12 text-center">
 		<a href="/auth/facebook" class="undecorated-link">
 			<img src="/modules/users/img/buttons/facebook.png">
@@ -16,8 +16,8 @@
 		<a href="/auth/github" class="undecorated-link">
 			<img src="/modules/users/img/buttons/github.png">
 		</a>
-	</div>
-	<h3 class="col-md-12 text-center">O con tu Email</h3>
+	</div> -->
+	<h3 class="col-md-12 text-center">Información Personal</h3>
 	<div class="col-xs-offset-2 col-xs-8 col-md-offset-5 col-md-2">
 		<form name="userForm" data-ng-submit="signup()" class="signin form-horizontal" novalidate autocomplete="off">
 			<fieldset>
@@ -47,10 +47,14 @@
 				</div>
 				<div class="form-group">
 					<label for="username">Tipo Usuario</label>
-					<input type="text" id="tipoUser" name="tipoUser" class="form-control" data-ng-model="credentials.tipoUser" placeholder="Tipo Usuario">
+					  <select id="tipoUser"  name="tipoUser" class="form-control" data-ng-model="credentials.tipoUser">
+						  <option value="2">Estudiante</option>
+						  <option value="2">Empleado</option>
+						  <option value="1">Administrador</option>
+						</select >
 				</div>
 				<div class="text-center form-group">
-					<button type="submit" class="btn btn-large btn-primary">Registrarse</button>&nbsp; or&nbsp;
+					<button type="submit" class="btn btn-large btn-primary">Registrarse</button>&nbsp; o&nbsp;
 					<a href="/#!/signin" class="show-signup">Ingresar</a>
 				</div>
 				<div data-ng-show="error" class="text-center text-danger">

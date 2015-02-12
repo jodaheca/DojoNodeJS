@@ -11,28 +11,81 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
     var codigoEspacio = $stateParams.espacioId;
     $scope.horarios = [
       {
-        codigo: 1,
-        valor: '2PM-3PM'
+        codigo: 14,
+        valor: '14PM-15PM'
       },
       {
-        codigo: 2,
-        valor: '3PM-4PM'
+        codigo: 15,
+        valor: '15PM-16PM'
       },
       {
-        codigo: 3,
-        valor: '4PM-5PM'
+        codigo: 16,
+        valor: '16PM-17PM'
       },
       {
-        codigo: 4,
-        valor: '5PM-6PM'
+        codigo: 17,
+        valor: '17PM-18PM'
       }
     ];
+    $scope.reservo = [
+      {
+        yaReservo: 0
+      }
+    ];
+   // $scope.reservo = 1;
+    if (codigoEspacio > 3) {   // La reserva es para una cancha sintetica
+      $scope.horarios = [
+        {
+          codigo: 8,
+          valor: '8AM-9AM'
+        },
+        {
+          codigo: 9,
+          valor: '9AM-10AM'
+        },
+        {
+          codigo: 10,
+          valor: '10AM-11AM'
+        },
+        {
+          codigo: 11,
+          valor: '11AM-12M'
+        },
+        {
+          codigo: 14,
+          valor: '14PM-15PM'
+        },
+        {
+          codigo: 15,
+          valor: '15PM-16PM'
+        },
+        {
+          codigo: 16,
+          valor: '16PM-17PM'
+        },
+        {
+          codigo: 17,
+          valor: '17PM-18PM'
+        }
+      ];
+      var fecha = new Date();
+      // Dia de la semana;
+      var dSemanaActual = fecha.getDay();
 
+      if (diaSemana !== dSemanaActual) {
+        alert('La reserva de la cancha de tenis se debe realizar el mismo dia que esta sera utilizada');
+        //$location.path('/homeStudent');
+        return;
+      }
+    }
+    console.log('Dia semana', diaSemana);
+    console.log('Horarios:', $scope.horarios);
     //Metodo en el cual se maneja el modal mediante el cual los estudiantes realizan las reservas
     var modalReservaEstudiante = $modal.open({
       templateUrl: 'modules/reservas/views/reserva-estudiante.client.view.html',
-      controller: function ($scope, $modalInstance, horarios) {
+      controller: function ($scope, $modalInstance, horarios, reservo) {
         $scope.horarios = horarios;
+        $scope.reservo = reservo;
         $scope.diaSemana = diaSemana;
         $scope.codigoEspacio = codigoEspacio;
         $scope.authentication = Authentication;
@@ -42,16 +95,18 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
         };
 
         $scope.reservar = function (hora) {
-          $scope.horaReserva = hora + 1;
+          $scope.horaReserva = hora;
+          var dt = new Date();
+          // Dia de la semana;
+          var dSemana = dt.getDay();
           if (codigoEspacio <= 3) {
             $scope.tipo_espacio = 'Cancha Sintetica';
           } else {
             $scope.tipo_espacio = 'Cancha de Tenis';
+            console.log('Dia semana: ', dSemana);
+            console.log('Dia semana: ', diaSemana);
           }
 
-          var dt = new Date();
-          // Dia de la semana;
-          var dSemana = dt.getDay();
           var dMes = dt.getDate();
           //var month = dt.getMonth();
           //var year = dt.getFullYear();
@@ -91,6 +146,9 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
       resolve: {
         horarios: function () {
           return $scope.horarios;
+        },
+        reservo: function () {
+          return $scope.reservo;
         }
       }
     });
@@ -130,6 +188,8 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
 
     // Remove existing Reserva
   $scope.remove = function (reserva) {
+    $scope.authentication = Authentication;
+    console.log('Tipo Usuario: ', $scope.authentication.user.tipoUser);
     var i;
     if (reserva) {
       reserva.$remove();
@@ -141,7 +201,15 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
       }
     } else {
       $scope.reserva.$remove(function () {
-        $location.path('reservas');
+        $scope.authentication = Authentication;
+        console.log('Tipo Usuario: ', $scope.authentication.user.tipoUser);
+        if ($scope.authentication.user.tipoUser == 2) { //Si es estudiante va a la pantalla principal
+          alert('Reserva Eliminada Correctamente.');
+          $location.path('homeStudent');
+         // $location.path('/auth/signout');
+        } else if ($scope.authentication.user.tipoUser == 1) { // Admnistrador va a ver las otras reservas
+          $location.path('reservas');
+        }
       });
     }
   };
@@ -160,6 +228,22 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
   // Find a list of Reservas
   $scope.find = function () {
     $scope.reservas = Reservas.query();
+  };
+  //Redirecionr al Principal del estudiante.
+
+  $scope.principalEstudiante = function () {
+    $location.path('/homeStudent');
+  };
+
+   //Redirecionr al Principal del admin.
+
+  $scope.principalAdmin = function () {
+    $location.path('/');
+  };
+
+  //Redirecionr a lalista de los estudiantes.
+  $scope.listarReservas = function () {
+    $location.path('/reservas');
   };
 
   // Metodo para obtener las reservas de un espacio especifico.
@@ -182,6 +266,9 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
     $scope.reserva = Reservas.get({
       reservaId: $stateParams.reservaId
     });
+    //var rese = $scope.reserva;
+    //console.log('Reserva: ', rese);
+    //$scope.diaReserva =  rese.getDate();
   };
  //Metodo que regresa las reservas que tenga una persona en un rango de fechas
   $scope.verificarDisponibilidad = function (espacioId) {
@@ -211,36 +298,91 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
     console.log('fecha Inicial: ', fechaInicial);
     console.log('fecha Final: ', fechaFinal);
 
-    //Metodo que consume el servicio web que recibe las fechas y la cedula de la persona y retorna una lista con las reservas
-    Reservafechaestudiante.getReservaUsuario(fechaInicial, fechaFinal, $scope.authentication.user.identificacion)
-      .success(function (res) {
-        console.log('PETICION:', res);
-        var reservas = res;
-        if (reservas.length !== 0) {
-          var reser = reservas[0];
-          console.log(reser);
-          console.log('Señor Usuario ya usted tiene una reserva para esta semana.');
-          alert('Señor Usuario  usted ya tiene una reserva para esta semana.');
-          $location.path('reservas/' + reser._id);
-
-        }
-      })
-        .error(function (err) {
-        console.log('Error: ', err);
-      });
-    // verificamos si esta consultando reservas para una Cancha sintetica        
+        // verificamos si esta consultando reservas para una Cancha sintetica        
     if (codigoEspacio <= 3) {
 
       // Si el dia en que se hace la consulta es diferente al lunes entones no lo dejamos pasar
-      if (dSemana !== 2) {
-         console.log('Recuerde que la reserva de las canchas Sinteticas se debe realizar los lunes de cada semana.');
+      if (dSemana !== 1) {
+        console.log('Recuerde que la reserva de las canchas Sinteticas se debe realizar los lunes de cada semana.');
         alert('La reserva de las canchas sintéticas se realizan los lunes de cada semana.');
         $location.path('/homeStudent');
-      } else {
-        $location.path('/modelo/' + espacioId);
+        return;
       }
+      //Metodo que consume el servicio web que recibe las fechas y la cedula de la persona y retorna una lista con las reservas
+      Reservafechaestudiante.getReservaUsuario(fechaInicial, fechaFinal, $scope.authentication.user.identificacion)
+        .success(function (res) {
+          console.log('PETICION:', res);
+          var reservas = res;
+          if (reservas.length !== 0) {
+            var reser = reservas[0];
+            console.log(reser);
+            console.log('Señor Usuario ya usted tiene una reserva para esta semana.');
+            alert('Señor Usuario  usted ya tiene una reserva para esta semana.');
+            $location.path('reservas/' + reser._id);
+            return;
+
+          }
+          $location.path('modelo/' + espacioId);
+          return;
+        })
+          .error(function (err) {
+          console.log('Error: ', err);
+        });
     } else { // Va a reservas una cancha De tenis
-        $location.path('/modelo/' + espacioId);
+      //Metodo que consume el servicio web que recibe las fechas y la cedula de la persona y retorna una lista con las reservas
+      Reservafechaestudiante.getReservaUsuario(fechaInicial, fechaFinal, $scope.authentication.user.identificacion)
+        .success(function (res) {
+          console.log('PETICION:', res);
+          var reservas = res;
+          if (reservas.length !== 0) {
+            var reser = reservas[0];
+            console.log(reser);
+            console.log('Señor Usuario ya usted tiene una reserva para esta semana.');
+            alert('Señor Usuario  usted ya tiene una reserva para esta semana.');
+            $location.path('reservas/' + reser._id);
+            return;
+
+          }
+          $location.path('modelo/' + espacioId);
+          return;
+        })
+          .error(function (err) {
+          console.log('Error: ', err);
+        });
     }
   };
+
+  $scope.today = function () {
+    $scope.dt = new Date();
+  };
+  $scope.today();
+
+  $scope.clear = function () {
+    $scope.dt = null;
+  };
+
+  // Disable weekend selection
+  $scope.disabled = function (date, mode) {
+    return (mode === 'day' && (date.getDay() === 0 || date.getDay() === 6));
+  };
+
+  $scope.toggleMin = function () {
+    $scope.minDate = $scope.minDate ? null : new Date();
+  };
+  $scope.toggleMin();
+
+  $scope.open = function ($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    $scope.opened = true;
+  };
+
+  $scope.dateOptions = {
+    formatYear: 'yy',
+    startingDay: 1
+  };
+
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
 });
