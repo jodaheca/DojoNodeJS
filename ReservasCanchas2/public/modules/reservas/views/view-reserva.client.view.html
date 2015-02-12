@@ -2,10 +2,10 @@
 	<div class="page-header">
 		<h1 data-ng-bind="reserva.user.displayName"></h1>
 			Identificación: {{reserva.persona}}<br/>
-            tipo de espacio: {{reserva.tipo_espacio}}<br/>
-            numero de espacio: {{reserva.numero_espacio}}<br/>
-            fecha: {{reserva.fecha}}<br/>
-            hora: {{reserva.hora}}<br/>
+            <p1>tipo de espacio:</p1>   {{reserva.tipo_espacio}}<br/>
+            numero de espacio:    {{reserva.numero_espacio}}<br/>
+            fecha:   {{reserva.fecha}}<br/>
+            hora:   {{reserva.hora}}<br/>
 	</div>
 	<div class="pull-right" data-ng-show="authentication.user.tipoUser == 1">
 		<a class="btn btn-warning" data-ng-click="listarReservas();">

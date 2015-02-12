@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
   errorHandler = require('./errors'),
   Reserva = mongoose.model('Reserva'),
   _ = require('lodash');
+var nodemailer = require('nodemailer'); //Paquete para el envio de mensajes a los usuario que reservan
 
 /**
  * Create a Reserva
@@ -14,49 +15,37 @@ var mongoose = require('mongoose'),
 exports.create = function (req, res) {
   var reserva = new Reserva(req.body);
   reserva.user = req.user;
-
-  // create reusable transporter object using SMTP transport
-            var transporter = nodemailer.createTransport({
-                service: 'Gmail',
-                auth: {
-                    user: 'jdavidhc94@gmail.com',
-                    pass: '94030909725jdhc'
-                }
-            });
-
-            // NB! No need to recreate the transporter object. You can use
-            // the same transporter object for all e-mails
-
-            // setup e-mail data with unicode symbols
-            var mailOptions = {
-                from: 'Reservas Deportivas ✔ <foo@blurdybloop.com>', // sender address
-                to: 'joaquincolossus@gmail.com', // list of receivers
-                subject: 'Prueba ✔', // Subject line
-                text: 'Prueba men ✔', // plaintext body
-                html: '<b>Hello world ✔</b>' // html body
-            };
-
-            // send mail with defined transport object
-            transporter.sendMail(mailOptions, function(error, info){
-                if(error){
-                    console.log(error);
-                }else{
-                    console.log('Message sent: ' + info.response);
-                }
-            });
-
-
-
-  
-
   reserva.save(function (err) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else {
-      res.jsonp(reserva);
     }
+    res.jsonp(reserva);
+    var smtpTransport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'jdavidhc94@gmail.com',
+        pass: '94030909725jdhc'
+      }
+    });
+
+    var mailOptions = {
+      from: 'Reservas Deportivas <reservasDeportivas.com>', // sender address
+      to: 'joaquincolossus@gmail.com', // list of receivers
+      subject: 'Informe de la reserva realizada', // Subject line
+      text: 'Mediante este correo le notificamos que su reserva se realizo exitosamente.' // plaintext body
+    };
+
+    smtpTransport.sendMail(mailOptions, function (error, response) {
+      if (error) {
+        console.log('Error enviando correo', error);
+      } else {
+        console.log('Respuesta al enviar el correo', response);
+        //res.redirect('/');
+      }
+    });
+
   });
 };
 
@@ -80,9 +69,8 @@ exports.update = function (req, res) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else {
-      res.jsonp(reserva);
     }
+    res.jsonp(reserva);
   });
 };
 
@@ -97,9 +85,9 @@ exports.delete = function (req, res) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else {
-      res.jsonp(reserva);
     }
+    res.jsonp(reserva);
+
   });
 };
 
@@ -111,9 +99,9 @@ exports.list = function (req, res) { Reserva.find().sort('-created').populate('u
     return res.status(400).send({
       message: errorHandler.getErrorMessage(err)
     });
-  } else {
-    res.jsonp(reservas);
   }
+  res.jsonp(reservas);
+
 });
   };
 
@@ -132,9 +120,8 @@ exports.listPorEspacio = function (req, res) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else {
-      res.jsonp(reservas);
     }
+    res.jsonp(reservas);
   });
 };
 
@@ -150,6 +137,7 @@ exports.reservaFechaUsuario = function (req, res) {
   console.log('Fecha Final: ', fechaFinal);
   var identificacion = req.params.idUsuario;
   console.log('identificacion: ', identificacion);
+
   // esta consulta devuelve las reservas en un rango de fechas de un usuario del sistema.
   Reserva.find({fecha: { $gte : fechaInicial, $lte : fechaFinal }, persona : identificacion}).sort('-created').populate('user', 'displayName').exec(function (err, reservas) {
     if (err) {
@@ -157,10 +145,10 @@ exports.reservaFechaUsuario = function (req, res) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
-    } else {
-      console.log('Respuesta de la consula: ', reservas);
-      res.jsonp(reservas);
     }
+    console.log('Respuesta de la consula: ', reservas);
+    res.jsonp(reservas);
+
   });
 };
 

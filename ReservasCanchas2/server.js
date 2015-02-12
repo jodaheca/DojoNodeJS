@@ -5,7 +5,6 @@
 var init = require('./config/init')(),
   config = require('./config/config'),
   mongoose = require('mongoose');
-var nodemailer = require('nodemailer');
 
 /**
  * Main application entry file.
