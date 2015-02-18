@@ -302,7 +302,7 @@ angular.module('reservas').controller('ReservasController', function ($scope, $s
     if (codigoEspacio <= 3) {
 
       // Si el dia en que se hace la consulta es diferente al lunes entones no lo dejamos pasar
-      if (dSemana !== 1) {
+      if (dSemana == 5) {
         console.log('Recuerde que la reserva de las canchas Sinteticas se debe realizar los lunes de cada semana.');
         alert('La reserva de las canchas sintéticas se realizan los lunes de cada semana.');
         $location.path('/homeStudent');
