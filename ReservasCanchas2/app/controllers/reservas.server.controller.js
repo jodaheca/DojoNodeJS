@@ -14,7 +14,20 @@ var nodemailer = require('nodemailer'); //Paquete para el envio de mensajes a lo
  */
 exports.create = function (req, res) {
   var reserva = new Reserva(req.body);
+  console.log("Peticion: ", req);
+  console.log("Reserva", reserva);
   reserva.user = req.user;
+  console.log("Correo ", req.user.email);
+  var mensaje = "Mediante este correo le notificamos que su reserva se realizó exitosamente.\n\n\n\n";
+  mensaje = mensaje.concat("Codigo de reserva: ");
+  mensaje = mensaje.concat(reserva._id);
+  mensaje = mensaje.concat("\nIdentificación de quien reserva: ", reserva.persona);
+  mensaje = mensaje.concat("\nTipo de Espacio Deportivo: ", reserva.tipo_espacio);
+  mensaje = mensaje.concat("\nNúmero de Espacio Deportivo: ", reserva.numero_espacio);
+  mensaje = mensaje.concat("\nFecha de reserva: ", reserva.fecha);
+  mensaje = mensaje.concat("\nHora de Reserva: ", reserva.hora);
+  mensaje = mensaje.concat("\n\n\n\nConserve e imprima esta constancia para verificar su reserva al momento de utilizar el espacio Deportivo ");
+  console.log("Mensaje", mensaje);
   reserva.save(function (err) {
     if (err) {
       return res.status(400).send({
@@ -25,16 +38,22 @@ exports.create = function (req, res) {
     var smtpTransport = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'jdavidhc94@gmail.com',
-        pass: '94030909725jdhc'
+        user: 'reservasudea@gmail.com',
+        pass: 'r3s3rvasud3a'
       }
     });
 
+    // var mailOptions = {
+    //   from: 'Reservas Deportivas <reservasudea@gmail.com', // sender address
+    //   to: 'joaquincolossus@gmail.com', // list of receivers
+    //   subject: 'Informe de la reserva realizada', // Subject line
+    //   text: 'Mediante este correo le notificamos que su reserva se realizo exitosamente.' // plaintext body
+    // };
     var mailOptions = {
-      from: 'Reservas Deportivas <reservasDeportivas.com>', // sender address
-      to: 'joaquincolossus@gmail.com', // list of receivers
+      from: 'Reservas Deportivas <reservasudea@gmail.com', // sender address
+      to: req.user.email, // list of receivers
       subject: 'Informe de la reserva realizada', // Subject line
-      text: 'Mediante este correo le notificamos que su reserva se realizo exitosamente.' // plaintext body
+      text: mensaje // plaintext body
     };
 
     smtpTransport.sendMail(mailOptions, function (error, response) {
